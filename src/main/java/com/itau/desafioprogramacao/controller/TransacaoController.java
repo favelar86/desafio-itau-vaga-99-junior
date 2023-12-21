@@ -2,6 +2,7 @@ package com.itau.desafioprogramacao.controller;
 
 import com.itau.desafioprogramacao.dto.TransacaoDTO;
 import com.itau.desafioprogramacao.service.TransacaoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class TransacaoController {
     private TransacaoService transacaoService;
 
     @PostMapping
-    public ResponseEntity<Void> salvar(@RequestBody TransacaoDTO transacaoDTO) {
+    public ResponseEntity<Void> salvar(@RequestBody @Valid TransacaoDTO transacaoDTO) {
         transacaoService.salvar(transacaoDTO);
         return ResponseEntity.status(201).build();
     }

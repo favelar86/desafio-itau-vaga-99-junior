@@ -1,23 +1,28 @@
 package com.itau.desafioprogramacao.dto;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class TransacaoDTO {
 
-    private double valor;
-    private OffsetDateTime dataHora;
+    @NotNull
+    @NotBlank
+    private String valor;
 
-    public TransacaoDTO(double valor, OffsetDateTime dataHora) {
+    @NotNull
+    @NotBlank
+    private String dataHora;
+
+    public TransacaoDTO(String valor, String dataHora) {
         this.valor = valor;
         this.dataHora = dataHora;
     }
 
-    public double getValor() {
+    public String getValor() {
         return valor;
     }
 
-    public OffsetDateTime getDataHora() {
+    public String getDataHora() {
         return dataHora;
     }
 }
