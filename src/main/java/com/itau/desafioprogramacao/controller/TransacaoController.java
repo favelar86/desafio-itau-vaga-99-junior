@@ -19,4 +19,10 @@ public class TransacaoController {
         transacaoService.salvar(transacaoDTO);
         return ResponseEntity.status(201).build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deletar() {
+        transacaoService.deletar();
+        return ResponseEntity.status(200).build();
+    }
 }

@@ -6,7 +6,6 @@ import com.itau.desafioprogramacao.mapper.TransacaoMapper;
 import com.itau.desafioprogramacao.model.Transacao;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -15,7 +14,7 @@ import java.util.Map;
 @Component
 public class TransacaoService {
 
-    private static final Map<Long, Transacao> transacoes = new HashMap<>();
+    private static Map<Long, Transacao> transacoes = new HashMap<>();
 
     public Transacao salvar(TransacaoDTO transacaoDTO) {
 
@@ -23,7 +22,17 @@ public class TransacaoService {
 
         Transacao transacao = TransacaoMapper.toTransacao(transacaoDTO);
         transacoes.put(transacao.getId(), transacao);
+
+        transacoes.get(transacao.getId()).toString();
+
         return transacao;
+    }
+
+    public void deletar() {
+
+        for (Map.Entry<Long, Transacao> set : transacoes.entrySet()) {
+            transacoes.remove(set.getKey());
+        }
     }
 
     public void validaRequest(TransacaoDTO transacaoDTO) {
