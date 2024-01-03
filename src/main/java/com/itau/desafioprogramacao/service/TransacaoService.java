@@ -1,38 +1,86 @@
 package com.itau.desafioprogramacao.service;
 
+import com.itau.desafioprogramacao.dto.EstatísticasDTO;
 import com.itau.desafioprogramacao.dto.TransacaoDTO;
 import com.itau.desafioprogramacao.exceptions.ValidacaoException;
 import com.itau.desafioprogramacao.mapper.TransacaoMapper;
 import com.itau.desafioprogramacao.model.Transacao;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Component
 public class TransacaoService {
 
-    private static Map<Long, Transacao> transacoes = new HashMap<>();
+    private static List<Transacao> transacoes =  new ArrayList<>();
 
     public Transacao salvar(TransacaoDTO transacaoDTO) {
 
         validaRequest(transacaoDTO);
 
         Transacao transacao = TransacaoMapper.toTransacao(transacaoDTO);
-        transacoes.put(transacao.getId(), transacao);
-
-        transacoes.get(transacao.getId()).toString();
+        transacoes.add(transacao);
 
         return transacao;
     }
 
     public void deletar() {
 
-        for (Map.Entry<Long, Transacao> set : transacoes.entrySet()) {
-            transacoes.remove(set.getKey());
+        int indice = 0;
+        while (!transacoes.isEmpty()) {
+            transacoes.remove(indice);
+            indice++;
         }
+    }
+
+    public EstatísticasDTO estatisticas() {
+
+        List<Double> estatisticas = new ArrayList<>();
+        OffsetDateTime dataAtual = OffsetDateTime.now();
+
+        Collections.reverse(transacoes);
+        for (Transacao transacao : transacoes) {
+
+            var duration = Duration.between(transacao.getDataHora(), dataAtual);
+            if (duration.getSeconds() <= 60) {
+                estatisticas.add(transacao.getValor());
+            }
+        }
+
+        EstatísticasDTO estatísticasDTO = new EstatísticasDTO();
+
+        estatísticasDTO.setCount(estatisticas.size());
+
+        estatísticasDTO.setAverage(estatisticas.stream()
+                .mapToDouble(d -> d)
+                .average()
+                .orElse(0.0));
+
+        estatísticasDTO.setSum(estatisticas.stream()
+                .mapToDouble(d -> d)
+                .sum());
+
+        estatísticasDTO.setMin(estatisticas.stream()
+                .mapToDouble(d -> d)
+                .min()
+                .orElse(0.0));
+
+        estatísticasDTO.setMax(estatisticas.stream()
+                .mapToDouble(d -> d)
+                .max()
+                .orElse(0.0));
+
+        System.out.println("Count = " + estatisticas.size());
+        System.out.println("Sum = " + estatísticasDTO.getSum());
+        System.out.println("Average = " + estatísticasDTO.getAverage());
+        System.out.println("Min = " + estatísticasDTO.getMin());
+        System.out.println("Max = " + estatísticasDTO.getMax());
+
+        return estatísticasDTO;
     }
 
     public void validaRequest(TransacaoDTO transacaoDTO) {
@@ -53,4 +101,5 @@ public class TransacaoService {
         }
 
     }
+
 }

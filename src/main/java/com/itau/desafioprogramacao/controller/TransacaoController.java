@@ -1,5 +1,6 @@
 package com.itau.desafioprogramacao.controller;
 
+import com.itau.desafioprogramacao.dto.EstatísticasDTO;
 import com.itau.desafioprogramacao.dto.TransacaoDTO;
 import com.itau.desafioprogramacao.service.TransacaoService;
 import jakarta.validation.Valid;
@@ -24,5 +25,10 @@ public class TransacaoController {
     public ResponseEntity<Void> deletar() {
         transacaoService.deletar();
         return ResponseEntity.status(200).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<EstatísticasDTO> findAll() {
+        return ResponseEntity.ok(transacaoService.estatisticas());
     }
 }
