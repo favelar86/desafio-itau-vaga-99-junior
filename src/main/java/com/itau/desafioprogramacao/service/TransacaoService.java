@@ -11,7 +11,6 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Component
 public class TransacaoService {
@@ -30,10 +29,8 @@ public class TransacaoService {
 
     public void deletar() {
 
-        int indice = 0;
-        while (!transacoes.isEmpty()) {
-            transacoes.remove(indice);
-            indice++;
+        while (transacoes.iterator().hasNext()) {
+            transacoes.remove(0);
         }
     }
 
@@ -74,12 +71,6 @@ public class TransacaoService {
                 .max()
                 .orElse(0.0));
 
-        System.out.println("Count = " + estatisticas.size());
-        System.out.println("Sum = " + estatísticasDTO.getSum());
-        System.out.println("Average = " + estatísticasDTO.getAverage());
-        System.out.println("Min = " + estatísticasDTO.getMin());
-        System.out.println("Max = " + estatísticasDTO.getMax());
-
         return estatísticasDTO;
     }
 
@@ -99,7 +90,6 @@ public class TransacaoService {
         if(Double.parseDouble(transacaoDTO.getValor()) < 0) {
             throw new ValidacaoException();
         }
-
     }
 
 }
