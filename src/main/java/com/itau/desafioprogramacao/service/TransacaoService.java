@@ -5,6 +5,8 @@ import com.itau.desafioprogramacao.dto.TransacaoDTO;
 import com.itau.desafioprogramacao.exceptions.ValidacaoException;
 import com.itau.desafioprogramacao.mapper.TransacaoMapper;
 import com.itau.desafioprogramacao.model.Transacao;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -15,6 +17,8 @@ import java.util.*;
 @Component
 public class TransacaoService {
 
+    Logger logger = LogManager.getLogger(getClass());
+
     private static List<Transacao> transacoes =  new ArrayList<>();
 
     public Transacao salvar(TransacaoDTO transacaoDTO) {
@@ -24,6 +28,8 @@ public class TransacaoService {
         Transacao transacao = TransacaoMapper.toTransacao(transacaoDTO);
         transacoes.add(transacao);
 
+        logger.info("Transacao cadastrada com sucesso");
+
         return transacao;
     }
 
@@ -32,6 +38,8 @@ public class TransacaoService {
         while (transacoes.iterator().hasNext()) {
             transacoes.remove(0);
         }
+
+        logger.info("Transacao deletadas com sucesso");
     }
 
     public EstatísticasDTO estatisticas() {
@@ -42,7 +50,7 @@ public class TransacaoService {
         Collections.reverse(transacoes);
         for (Transacao transacao : transacoes) {
 
-            var duration = Duration.between(transacao.getDataHora(), dataAtual);
+            var duration = Duration.between(dataAtual, transacao.getDataHora());
             if (duration.getSeconds() <= 60) {
                 estatisticas.add(transacao.getValor());
             }
@@ -70,6 +78,8 @@ public class TransacaoService {
                 .mapToDouble(d -> d)
                 .max()
                 .orElse(0.0));
+
+        logger.info("Estatisticas listada com sucesso");
 
         return estatísticasDTO;
     }
